@@ -27,7 +27,7 @@ export default function HomePage() {
         </div>
         <div className="w-8 h-8 rounded-full overflow-hidden">
           <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Captura%20de%20tela%202025-01-24%20192728-Lumt0rfObxCMHwmNwqEHzmhaMTxc21.png"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/MEH37.png"
             alt="Profile"
             width={32}
             height={32}
