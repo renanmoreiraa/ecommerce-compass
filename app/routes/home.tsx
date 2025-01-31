@@ -12,7 +12,7 @@ export function meta({}: Route.MetaArgs) {
 export async function clientLoader() {
     const authed = await isAuthed()
     if (!authed) {
-        return redirect("/login")
+        return redirect("/signin")
     }
 }
 

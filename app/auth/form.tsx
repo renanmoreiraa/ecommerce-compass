@@ -4,8 +4,9 @@ import { Mail, Lock } from "lucide-react"
 import { Button } from "~/ui/button"
 import { Input } from "~/ui/input"
 import { useAuth } from "~/context/auth-context"
+import GoogleIcon from "~/icons/google.svg"
 
-export function LoginForm() {
+export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
@@ -32,8 +33,8 @@ export function LoginForm() {
     }
 
     return (
-        <div className="relative z-10 w-full max-w-md space-y-8 text-center">
-            <div className="space-y-2">
+        <div className="relative z-10 flex h-[80dvh] w-full flex-col justify-center gap-8 p-8 text-center">
+            <div className="mb-auto w-full space-y-2">
                 <h1 className="text-4xl font-bold text-white">Audio</h1>
                 <p className="text-gray-300">
                     It's modular and designed to last
@@ -48,7 +49,7 @@ export function LoginForm() {
                         placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="border-transparent bg-white/10 pl-10 text-white placeholder:text-gray-400"
+                        className="border-transparent bg-white p-6 pl-10 text-white placeholder:text-gray-400"
                         required
                     />
                 </div>
@@ -60,54 +61,54 @@ export function LoginForm() {
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="border-transparent bg-white/10 pl-10 text-white placeholder:text-gray-400"
+                        className="border-transparent bg-white p-6 pl-10 text-white placeholder:text-gray-400"
                         required
                     />
                 </div>
 
                 {error && <p className="text-sm text-red-500">{error}</p>}
 
-                <div className="text-right">
-                    <Link
-                        to="/forgot-password"
-                        className="text-sm text-gray-300 hover:text-white"
-                    >
-                        Forgot Password
-                    </Link>
-                </div>
+                {mode === "signin" ? (
+                    <div className="-mt-2">
+                        <Button
+                            asChild
+                            variant={"link"}
+                            className="text-sm text-white"
+                        >
+                            <Link to="/forgot-password">Forgot Password</Link>
+                        </Button>
+                    </div>
+                ) : null}
 
                 <Button
                     type="submit"
-                    className="w-full bg-[#00FF90] font-semibold text-black hover:bg-[#00FF90]/90"
+                    className="p-6 bg-primary hover:bg-primary/90 w-full font-semibold text-white"
                 >
-                    Sign In
+                    {mode === "signin" ? "Sign In" : "Sign Up"}
                 </Button>
-            </form>
 
-            <div className="space-y-4">
                 <Button
                     type="button"
                     onClick={handleGoogleSignIn}
-                    variant="outline"
-                    className="w-full space-x-2 border-transparent bg-white/10 text-white hover:bg-white/20"
+                    variant="link"
+                    className="p-6 text-white"
                 >
-                    <img
-                        src="/google.svg"
-                        alt="Google"
-                        width={20}
-                        height={20}
-                        className="mr-2"
-                    />
-                    Sign in with Google
+                    <GoogleIcon />
+                    {mode === "signin"
+                        ? "Sign in with Google"
+                        : "Sign up with Google"}
                 </Button>
-
-                <p className="text-gray-300">
-                    Didn't have any account?{" "}
+            </form>
+            <div className="mt-auto">
+                <p className="text-sm text-gray-300">
+                    {mode === "signin"
+                        ? "Didn't have any account?"
+                        : "If you have an account?"}{" "}
                     <Link
                         to="/signup"
                         className="text-[#00FF90] hover:underline"
                     >
-                        Sign Up here
+                        {mode === "signin" ? "Sign up" : "Sign in"} here
                     </Link>
                 </p>
             </div>

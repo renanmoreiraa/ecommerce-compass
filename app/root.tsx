@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root"
 import "./root.css"
 import { AuthProvider } from "./context/auth-context"
+import { Loader } from "lucide-react"
 
 export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -77,5 +78,16 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
                 </pre>
             )}
         </main>
+    )
+}
+
+export function HydrateFallback() {
+    return (
+        <div className="flex min-h-screen items-center justify-center gap-2">
+            <Loader size={32} className="animate-spin text-zinc-500" />
+            <span className="text-lg font-medium text-zinc-500">
+                Loading...
+            </span>
+        </div>
     )
 }
