@@ -1,7 +1,7 @@
 import type { Route } from "./+types/home"
 import { isAuthed } from "~/auth/utils"
 import { Link, redirect } from "react-router"
-import { Search } from "lucide-react"
+import { ArrowRight, Search } from "lucide-react"
 import { Input } from "~/ui/input"
 import { Button } from "~/ui/button"
 import { Api } from "~/lib/api"
@@ -11,11 +11,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/ui/avatar"
 import { Badge } from "~/ui/badge"
 import React from "react"
 import type { Product } from "~/lib/types"
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "~/ui/carousel"
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "New React Router App" },
-        { name: "description", content: "Welcome to React Router!" },
+        { title: "Audio" },
+        { name: "description", content: "It's modular and designed to last" },
     ]
 }
 
@@ -50,12 +57,17 @@ function getInitials(displayName: string | undefined | null): string {
     return displayName.slice(0, 2).toUpperCase()
 }
 
+function getTopPopularProducts(products: Product[], limit: number = 5) {
+    return [...products]
+        .sort((a, b) => b.popularity - a.popularity)
+        .slice(0, limit)
+}
+
 export default function Home(props: Route.ComponentProps) {
     const { user } = useAuth()
     const [activeTab, setActiveTab] = React.useState<Category>(
         Category.Headphone,
     )
-
     const [products, setProducts] = React.useState(
         filterProducts(props.loaderData, activeTab),
     )
@@ -147,63 +159,98 @@ export default function Home(props: Route.ComponentProps) {
                         Headset
                     </Badge>
                 </div>
-
-                {/* Featured Product Card */}
-                <div className="mb-6 rounded-2xl bg-white p-4">
-                    <div className="flex items-start justify-between">
-                        <div>
-                            <h3 className="mb-1 font-bold">TMA-2</h3>
-                            <p className="mb-4 font-bold">Modular Headphone</p>
-                            <Button
-                                variant="link"
-                                className="h-auto p-0 font-semibold text-[#00FF90] hover:text-[#00FF90]/90"
-                            >
-                                Shop now →
-                            </Button>
-                        </div>
-                        <img
-                            src="/placeholder.svg?height=80&width=80"
-                            alt="TMA-2 Headphones"
-                            width={80}
-                            height={80}
-                            className="object-contain"
-                        />
+                {/* Top Products Carousel */}
+                <div className="mb-6">
+                    <Carousel
+                        opts={{
+                            align: "start",
+                            loop: true,
+                        }}
+                        className="w-full"
+                    >
+                        <CarouselContent>
+                            {getTopPopularProducts(products).map((product) => (
+                                <CarouselItem
+                                    key={product.id}
+                                    className="md:basis-1/2 lg:basis-1/5"
+                                >
+                                    <div className="flex items-center rounded-2xl bg-white p-4">
+                                        <div className="flex w-full max-w-48 flex-col items-start gap-4">
+                                            <h3 className="text-2xl font-bold">
+                                                {product.name}
+                                            </h3>
+                                            <Button
+                                                variant="link"
+                                                className="p-0 font-bold"
+                                                asChild
+                                            >
+                                                <Link
+                                                    to={`/product/${product.id}`}
+                                                >
+                                                    Shop now{" "}
+                                                    <ArrowRight size={16} />
+                                                </Link>
+                                            </Button>
+                                        </div>
+                                        <img
+                                            src={
+                                                product.img ||
+                                                "/placeholder.svg?height=120&width=120"
+                                            }
+                                            alt={product.name}
+                                            width={120}
+                                            height={120}
+                                            className="mx-auto mb-4 object-contain"
+                                        />
+                                    </div>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                    </Carousel>
+                </div>
+                {/* Product Carousel */}
+                <div>
+                    <div className="mb-4 flex items-center justify-between">
+                        <h2 className="font-bold">Featured Products</h2>
+                        <Button variant="link" className="text-gray-500">
+                            See All
+                        </Button>
                     </div>
-                </div>
-
-                {/* Featured Products Section */}
-                <div className="mb-4 flex items-center justify-between">
-                    <h2 className="font-bold">Featured Products</h2>
-                    <Button variant="link" className="text-gray-500">
-                        See All
-                    </Button>
-                </div>
-
-                {/* Product Grid */}
-                <div className="grid grid-cols-2 gap-4">
-                    {products.map((product) => (
-                        <div
-                            key={product.id}
-                            className="rounded-2xl bg-gray-50 p-4"
-                        >
-                            <img
-                                src={
-                                    product.img ||
-                                    "/placeholder.svg?height=120&width=120"
-                                }
-                                alt={product.name}
-                                width={120}
-                                height={120}
-                                className="mx-auto mb-4"
-                            />
-                            <h3 className="text-sm font-semibold">
-                                {product.name}
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                                USD {product.price.toFixed(2)}
-                            </p>
-                        </div>
-                    ))}
+                    <Carousel
+                        opts={{
+                            align: "start",
+                            loop: true,
+                        }}
+                        className="w-full"
+                    >
+                        <CarouselContent>
+                            {products.map((product) => (
+                                <CarouselItem
+                                    key={product.id}
+                                    className="max-w-[220px] md:basis-1/2 lg:basis-1/5"
+                                >
+                                    <div className="rounded-md bg-white p-4">
+                                        <img
+                                            src={
+                                                product.img ||
+                                                "/placeholder.svg?height=120&width=120"
+                                            }
+                                            alt={product.name}
+                                            width={120}
+                                            height={120}
+                                            className="mx-auto mb-4"
+                                        />
+                                        <h3 className="text-sm font-semibold">
+                                            {product.name}
+                                        </h3>
+                                        <p className="text-sm text-gray-600">
+                                            USD {product.price.toFixed(2)}
+                                        </p>
+                                    </div>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                    </Carousel>
                 </div>
             </div>
         </div>
