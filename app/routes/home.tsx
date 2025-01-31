@@ -1,38 +1,21 @@
 import type { Route } from "./+types/home"
-import { isAuthed } from "~/auth/utils"
-import { Link, redirect } from "react-router"
+import { Link, useRouteLoaderData } from "react-router"
 import { ArrowRight, Menu, Search } from "lucide-react"
 import { Input } from "~/ui/input"
 import { Button } from "~/ui/button"
-import { Api } from "~/lib/api"
 import Logo from "~/icons/logo.svg"
 import { useAuth } from "~/context/auth-context"
 import { Avatar, AvatarFallback, AvatarImage } from "~/ui/avatar"
 import { Badge } from "~/ui/badge"
 import React from "react"
 import type { Product } from "~/lib/types"
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "~/ui/carousel"
+import { Carousel, CarouselContent, CarouselItem } from "~/ui/carousel"
 
 export function meta({}: Route.MetaArgs) {
     return [
         { title: "Audio" },
         { name: "description", content: "It's modular and designed to last" },
     ]
-}
-
-export async function clientLoader() {
-    const authed = await isAuthed()
-    if (!authed) {
-        return redirect("/signin")
-    }
-
-    return await Api.getProducts()
 }
 
 const Category = {
@@ -58,23 +41,18 @@ function getInitials(displayName: string | undefined | null): string {
 }
 
 function getTopPopularProducts(products: Product[], limit: number = 5) {
-    return [...products]
-        .sort((a, b) => b.popularity - a.popularity)
-        .slice(0, limit)
+    return [...products].sort((a, b) => b.popularity - a.popularity).slice(0, limit)
 }
 
-export default function Home(props: Route.ComponentProps) {
+export default function Home() {
+    const data = useRouteLoaderData("root") as Product[]
     const { user } = useAuth()
-    const [activeTab, setActiveTab] = React.useState<Category>(
-        Category.Headphone,
-    )
-    const [products, setProducts] = React.useState(
-        filterProducts(props.loaderData, activeTab),
-    )
+    const [activeTab, setActiveTab] = React.useState<Category>(Category.Headphone)
+    const [products, setProducts] = React.useState(filterProducts(data, activeTab))
 
     function handleCategoryChange(category: Category) {
         setActiveTab(category)
-        setProducts(filterProducts(props.loaderData, category))
+        setProducts(filterProducts(data, category))
     }
 
     return (
@@ -89,21 +67,17 @@ export default function Home(props: Route.ComponentProps) {
                     <h1 className="text-lg font-bold">Audio</h1>
                 </div>
                 <Avatar>
-                    <AvatarImage src={user?.photoURL ?? undefined} />
-                    <AvatarFallback>
-                        {getInitials(user?.displayName)}
-                    </AvatarFallback>
+                    <AvatarImage src={user!.photoURL ?? undefined} />
+                    <AvatarFallback>{getInitials(user!.displayName)}</AvatarFallback>
                 </Avatar>
             </header>
 
             {/* Welcome Section */}
             <div className="mb-6 p-4">
                 <p className="mb-1 font-medium text-gray-600">
-                    Hi, {user?.displayName ?? "Unknown"}
+                    Hi, {user!.displayName ?? "Unknown"}
                 </p>
-                <h1 className="text-3xl font-bold">
-                    What are you looking for today?
-                </h1>
+                <h1 className="text-3xl font-bold">What are you looking for today?</h1>
             </div>
 
             {/* Search Bar */}
@@ -160,19 +134,14 @@ export default function Home(props: Route.ComponentProps) {
                                 >
                                     <div className="flex items-center rounded-2xl bg-white p-4">
                                         <div className="flex w-full max-w-48 flex-col items-start gap-4">
-                                            <h3 className="text-2xl font-bold">
-                                                {product.name}
-                                            </h3>
+                                            <h3 className="text-2xl font-bold">{product.name}</h3>
                                             <Button
                                                 variant="link"
                                                 className="p-0 font-bold"
                                                 asChild
                                             >
-                                                <Link
-                                                    to={`/product/${product.id}`}
-                                                >
-                                                    Shop now{" "}
-                                                    <ArrowRight size={16} />
+                                                <Link to={`/product/${product.id}`}>
+                                                    Shop now <ArrowRight size={16} />
                                                 </Link>
                                             </Button>
                                         </div>
@@ -224,9 +193,7 @@ export default function Home(props: Route.ComponentProps) {
                                             height={120}
                                             className="mx-auto mb-4"
                                         />
-                                        <h3 className="text-sm">
-                                            {product.name}
-                                        </h3>
+                                        <h3 className="text-sm">{product.name}</h3>
                                         <p className="text-sm font-semibold text-black">
                                             USD {product.price.toFixed(0)}
                                         </p>

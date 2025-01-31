@@ -3,14 +3,17 @@ import {
     Links,
     Meta,
     Outlet,
+    redirect,
     Scripts,
     ScrollRestoration,
 } from "react-router"
 
 import type { Route } from "./+types/root"
-import "./root.css"
 import { AuthProvider } from "./context/auth-context"
 import { Loader } from "lucide-react"
+import "./root.css"
+import { isAuthed } from "./auth/utils"
+import { Api } from "./lib/api"
 
 export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -24,6 +27,16 @@ export const links: Route.LinksFunction = () => [
         href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
     },
 ]
+
+export async function clientLoader() {
+    const authed = await isAuthed()
+
+    if (!authed) {
+        return redirect("/signin")
+    }
+
+    return await Api.getProducts()
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
     return (

@@ -23,7 +23,6 @@ const AuthContext = React.createContext<AuthContextType>({} as AuthContextType)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const navigate = useNavigate()
     const [user, setUser] = React.useState<User | null>(null)
-    const [loading, setLoading] = React.useState(true)
 
     React.useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -33,7 +32,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             } else {
                 Cookies.remove("auth")
             }
-            setLoading(false)
         })
 
         return () => unsubscribe()
