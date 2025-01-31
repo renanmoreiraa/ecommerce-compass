@@ -1,7 +1,7 @@
 import type { Route } from "./+types/home"
 import { isAuthed } from "~/auth/utils"
 import { Link, redirect } from "react-router"
-import { ArrowRight, Search } from "lucide-react"
+import { ArrowRight, Menu, Search } from "lucide-react"
 import { Input } from "~/ui/input"
 import { Button } from "~/ui/button"
 import { Api } from "~/lib/api"
@@ -81,28 +81,12 @@ export default function Home(props: Route.ComponentProps) {
         <div className="min-h-screen w-full bg-white">
             {/* Header */}
             <header className="mb-6 flex items-center justify-between p-4">
-                <div className="flex items-center space-x-3">
-                    <button className="p-2">
-                        <svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M3 12H21M3 6H21M3 18H21"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                        </svg>
-                    </button>
-                    <div className="flex items-center gap-2">
-                        <Logo />
-                        <h1 className="text-lg font-bold">Audio</h1>
-                    </div>
+                <button className="cursor-pointer">
+                    <Menu size={24} />
+                </button>
+                <div className="flex items-center gap-2">
+                    <Logo />
+                    <h1 className="text-lg font-bold">Audio</h1>
                 </div>
                 <Avatar>
                     <AvatarImage src={user?.photoURL ?? undefined} />
@@ -133,7 +117,7 @@ export default function Home(props: Route.ComponentProps) {
                 />
             </Link>
 
-            <div className="rounded-t-2xl bg-gray-100 p-4">
+            <div className="rounded-t-2xl bg-gray-100 p-4 pt-8">
                 {/* Filter Chips */}
                 <div className="mb-6 flex gap-3">
                     <Badge
@@ -240,11 +224,11 @@ export default function Home(props: Route.ComponentProps) {
                                             height={120}
                                             className="mx-auto mb-4"
                                         />
-                                        <h3 className="text-sm font-semibold">
+                                        <h3 className="text-sm">
                                             {product.name}
                                         </h3>
-                                        <p className="text-sm text-gray-600">
-                                            USD {product.price.toFixed(2)}
+                                        <p className="text-sm font-semibold text-black">
+                                            USD {product.price.toFixed(0)}
                                         </p>
                                     </div>
                                 </CarouselItem>
