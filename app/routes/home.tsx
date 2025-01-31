@@ -38,6 +38,18 @@ function filterProducts(products: Product[], category: Category) {
     return products.filter((product) => product.category === category)
 }
 
+function getInitials(displayName: string | undefined | null): string {
+    if (!displayName) return ""
+
+    const nameParts = displayName.trim().split(" ")
+
+    if (nameParts.length > 1) {
+        return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`.toUpperCase()
+    }
+
+    return displayName.slice(0, 2).toUpperCase()
+}
+
 export default function Home(props: Route.ComponentProps) {
     const { user } = useAuth()
     const [activeTab, setActiveTab] = React.useState<Category>(
@@ -82,7 +94,9 @@ export default function Home(props: Route.ComponentProps) {
                 </div>
                 <Avatar>
                     <AvatarImage src={user?.photoURL ?? undefined} />
-                    <AvatarFallback>X</AvatarFallback>
+                    <AvatarFallback>
+                        {getInitials(user?.displayName)}
+                    </AvatarFallback>
                 </Avatar>
             </header>
 
