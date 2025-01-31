@@ -56,7 +56,7 @@ export function SearchPageComponent({ products }: { products: Product[] }) {
                             key={product.id}
                             className="flex items-center gap-4 rounded-xl bg-gray-50 p-3"
                         >
-                            <Image
+                            <img
                                 src={product.img || "/placeholder.svg"}
                                 alt={product.name}
                                 width={80}
@@ -90,7 +90,7 @@ export function SearchPageComponent({ products }: { products: Product[] }) {
                                 key={product.id}
                                 className="flex items-center gap-4 rounded-xl bg-gray-50 p-3"
                             >
-                                <Image
+                                <img
                                     src={product.img || "/placeholder.svg"}
                                     alt={product.name}
                                     width={80}
