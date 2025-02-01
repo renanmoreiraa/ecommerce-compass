@@ -17,6 +17,7 @@ import type { Route } from "./+types/root"
 import "./root.css"
 
 export const links: Route.LinksFunction = () => [
+    {rel: "icon", type: "image/svg+xml", href: "/favicon.svg"},
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
     {
         rel: "preconnect",
@@ -28,6 +29,13 @@ export const links: Route.LinksFunction = () => [
         href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
     },
 ]
+
+export function meta(args: Route.MetaArgs) {
+    return [
+        { title: "Audio" },
+        { name: "description", content: "It's modular and designed to last" },
+    ]
+}
 
 export async function clientLoader(args: Route.ClientLoaderArgs) {
     const url = new URL(args.request.url)

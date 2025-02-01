@@ -1,4 +1,3 @@
-import type { Route } from "./+types/home"
 import { Link } from "react-router"
 import { ArrowRight, Menu, Search } from "lucide-react"
 import { Input } from "~/components/ui/input"
@@ -11,13 +10,6 @@ import type { Product } from "~/lib/types"
 import { Carousel, CarouselContent, CarouselItem } from "~/components/ui/carousel"
 import { AuthContext } from "~/auth/auth-context"
 import { useProducts } from "~/hooks/get-products"
-
-export function meta({}: Route.MetaArgs) {
-    return [
-        { title: "Audio" },
-        { name: "description", content: "It's modular and designed to last" },
-    ]
-}
 
 const Category = { Headphone: "Headphone", Headset: "Headset" } as const
 type Category = (typeof Category)[keyof typeof Category]

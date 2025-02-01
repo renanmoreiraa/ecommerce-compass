@@ -1,10 +1,12 @@
+import { ArrowLeft, EllipsisVertical, Search, ShoppingCart } from "lucide-react"
 import React from "react"
-import { Search, ArrowLeft, ShoppingCart } from "lucide-react"
-import { Input } from "~/components/ui/input"
-import { Button } from "~/components/ui/button"
-import type { Product } from "~/lib/types"
 import { useNavigate } from "react-router"
+import { Button } from "~/components/ui/button"
+import { Input } from "~/components/ui/input"
 import { useProducts } from "~/hooks/get-products"
+import Star from "~/icons/star.svg"
+import type { Product } from "~/lib/types"
+import { averageProductRating } from "~/lib/utils"
 
 export default function SearchPage() {
     const navigate = useNavigate()
@@ -89,7 +91,7 @@ export default function SearchPage() {
                         {products.slice(0, 3).map((product) => (
                             <div
                                 key={product.id}
-                                className="flex items-center gap-4 rounded-xl bg-gray-50 p-3"
+                                className="flex items-center gap-4 rounded-xl p-4"
                             >
                                 <img
                                     src={product.img || "/placeholder.svg"}
@@ -98,16 +100,21 @@ export default function SearchPage() {
                                     height={64}
                                     className="rounded-lg"
                                 />
-                                <div className="flex-1">
-                                    <h3 className="font-medium">{product.name}</h3>
-                                    <p className="text-sm">USD {product.price}</p>
-                                    <div className="mt-1 flex items-center gap-1">
-                                        <span className="text-sm">
-                                            ★ TODO: Função para pegar rating do produto
+                                <div className="flex-1 space-y-1">
+                                    <h3>{product.name}</h3>
+                                    <p className="text-sm font-bold">USD {product.price}</p>
+                                    <div className="flex items-center gap-3 text-sm">
+                                        <div className="flex items-center gap-1">
+                                            <Star />
+                                            {averageProductRating(product.reviews).toFixed(1)}
+                                        </div>
+                                        <span className="text-gray-500">
+                                            {product.reviews.length}{" "}
+                                            {product.reviews.length > 1 ? "Reviews" : "Review"}
                                         </span>
-                                        <span className="text-sm text-gray-500">
-                                            ({product.reviews.length} Reviews)
-                                        </span>
+                                        <button className="ml-auto" type="button">
+                                            <EllipsisVertical className="text-gray-500" size={20} />
+                                        </button>
                                     </div>
                                 </div>
                             </div>
