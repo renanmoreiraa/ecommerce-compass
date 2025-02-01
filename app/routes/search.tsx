@@ -1,13 +1,14 @@
 import React from "react"
 import { Search, ArrowLeft, ShoppingCart } from "lucide-react"
-import { Input } from "~/ui/input"
-import { Button } from "~/ui/button"
+import { Input } from "~/components/ui/input"
+import { Button } from "~/components/ui/button"
 import type { Product } from "~/lib/types"
-import { useNavigate, useRouteLoaderData } from "react-router"
+import { useNavigate } from "react-router"
+import { useProducts } from "~/hooks/get-products"
 
 export default function SearchPage() {
-    const products = useRouteLoaderData("root") as Product[]
     const navigate = useNavigate()
+    const { data: products } = useProducts()
     const [searchQuery, setSearchQuery] = React.useState("")
     const [searchResults, setSearchResults] = React.useState<Product[] | null>(null)
 

@@ -1,3 +1,6 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import React from "react"
 import {
     isRouteErrorResponse,
     Links,
@@ -7,13 +10,11 @@ import {
     Scripts,
     ScrollRestoration,
 } from "react-router"
-
+import { AuthProvider } from "~/auth/auth-context"
+import { isAuthed } from "~/auth/auth-utils"
+import { LoadingSpinner } from "~/components/loading-spinner"
 import type { Route } from "./+types/root"
-import { AuthProvider } from "./context/auth-context"
-import { Loader } from "lucide-react"
 import "./root.css"
-import { isAuthed } from "./auth/utils"
-import { Api } from "./lib/api"
 
 export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -28,33 +29,36 @@ export const links: Route.LinksFunction = () => [
     },
 ]
 
-export async function clientLoader() {
+export async function clientLoader(args: Route.ClientLoaderArgs) {
+    const url = new URL(args.request.url)
     const authed = await isAuthed()
 
     if (!authed) {
         return redirect("/signin")
+    } else if (url.pathname === "/signin" || url.pathname === "/signup") {
+        return redirect("/")
     }
-
-    return await Api.getProducts()
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+    const [queryClient] = React.useState(() => new QueryClient())
+
     return (
         <html lang="en">
             <head>
                 <meta charSet="utf-8" />
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1"
-                />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <Meta />
                 <Links />
             </head>
             <body>
                 <AuthProvider>
-                    {children}
-                    <ScrollRestoration />
-                    <Scripts />
+                    <QueryClientProvider client={queryClient}>
+                        {children}
+                        <ScrollRestoration />
+                        <Scripts />
+                        <ReactQueryDevtools initialIsOpen={false} />
+                    </QueryClientProvider>
                 </AuthProvider>
             </body>
         </html>
@@ -95,12 +99,5 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 }
 
 export function HydrateFallback() {
-    return (
-        <div className="flex min-h-screen items-center justify-center gap-2">
-            <Loader size={32} className="animate-spin text-zinc-500" />
-            <span className="text-lg font-medium text-zinc-500">
-                Loading...
-            </span>
-        </div>
-    )
+    return <LoadingSpinner />
 }

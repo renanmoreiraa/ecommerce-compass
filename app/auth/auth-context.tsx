@@ -11,14 +11,14 @@ import { auth } from "~/lib/firebase"
 import Cookies from "js-cookie"
 import { useNavigate } from "react-router"
 
-interface AuthContextType {
+export interface AuthContext {
     user: User | null
     signIn: (email: string, password: string) => Promise<void>
     signInWithGoogle: () => Promise<void>
     logout: () => Promise<void>
 }
 
-const AuthContext = React.createContext<AuthContextType>({} as AuthContextType)
+export const AuthContext = React.createContext<AuthContext>({} as AuthContext)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const navigate = useNavigate()
@@ -76,5 +76,3 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         </AuthContext.Provider>
     )
 }
-
-export const useAuth = () => React.useContext(AuthContext)

@@ -1,15 +1,16 @@
 import type { Route } from "./+types/home"
-import { Link, useRouteLoaderData } from "react-router"
+import { Link } from "react-router"
 import { ArrowRight, Menu, Search } from "lucide-react"
-import { Input } from "~/ui/input"
-import { Button } from "~/ui/button"
+import { Input } from "~/components/ui/input"
+import { Button } from "~/components/ui/button"
 import Logo from "~/icons/logo.svg"
-import { useAuth } from "~/context/auth-context"
-import { Avatar, AvatarFallback, AvatarImage } from "~/ui/avatar"
-import { Badge } from "~/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
+import { Badge } from "~/components/ui/badge"
 import React from "react"
 import type { Product } from "~/lib/types"
-import { Carousel, CarouselContent, CarouselItem } from "~/ui/carousel"
+import { Carousel, CarouselContent, CarouselItem } from "~/components/ui/carousel"
+import { AuthContext } from "~/auth/auth-context"
+import { useProducts } from "~/hooks/get-products"
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -18,10 +19,7 @@ export function meta({}: Route.MetaArgs) {
     ]
 }
 
-const Category = {
-    Headphone: "Headphone",
-    Headset: "Headset",
-} as const
+const Category = { Headphone: "Headphone", Headset: "Headset" } as const
 type Category = (typeof Category)[keyof typeof Category]
 
 function filterProducts(products: Product[], category: Category) {
@@ -45,10 +43,10 @@ function getTopPopularProducts(products: Product[], limit: number = 5) {
 }
 
 export default function Home() {
-    const data = useRouteLoaderData("root") as Product[]
-    const { user } = useAuth()
+    const { user } = React.use(AuthContext)
+    const { data } = useProducts()
     const [activeTab, setActiveTab] = React.useState<Category>(Category.Headphone)
-    const [products, setProducts] = React.useState(filterProducts(data, activeTab))
+    const [products, setProducts] = React.useState(filterProducts(data!, activeTab))
 
     function handleCategoryChange(category: Category) {
         setActiveTab(category)

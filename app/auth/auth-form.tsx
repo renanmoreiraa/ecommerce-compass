@@ -2,13 +2,13 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "~/ui/form"
-import { useAuth } from "~/context/auth-context"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "~/components/ui/form"
 import { Lock, Mail } from "lucide-react"
-import { Input } from "~/ui/input"
-import { Button } from "~/ui/button"
+import { Input } from "~/components/ui/input"
+import { Button } from "~/components/ui/button"
 import { Link } from "react-router"
 import Google from "~/icons/google.svg"
+import { AuthContext } from "~/auth/auth-context"
 
 const formSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -25,7 +25,7 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
     })
 
     const [error, setError] = React.useState("")
-    const { signIn, signInWithGoogle } = useAuth()
+    const { signIn, signInWithGoogle } = React.use(AuthContext)!
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setError("")
