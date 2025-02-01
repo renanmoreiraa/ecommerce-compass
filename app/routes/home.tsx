@@ -1,5 +1,5 @@
 import { Link } from "react-router"
-import { ArrowRight, Menu, Search } from "lucide-react"
+import { ArrowRight, Headset, Menu, Search } from "lucide-react"
 import { Input } from "~/components/ui/input"
 import { Button } from "~/components/ui/button"
 import Logo from "~/icons/logo.svg"
@@ -12,8 +12,11 @@ import { AuthContext } from "~/auth/auth-context"
 import { useProducts } from "~/hooks/get-products"
 import { getNameInitials, getMostPopularProducts } from "~/lib/utils"
 
-const Category = { Headphone: "Headphone", Headset: "Headset" } as const
-type Category = (typeof Category)[keyof typeof Category]
+const Category = {
+    Headphone:"Headphone",
+    Headset: "Headset",
+} as const
+type Category = typeof Category[keyof typeof Category]
 
 function filterProducts(products: Product[], category: Category) {
     return products.filter((product) => product.category === category)
@@ -22,11 +25,11 @@ function filterProducts(products: Product[], category: Category) {
 export default function Home() {
     const { user } = React.use(AuthContext)
     const { data } = useProducts()
-    const [activeTab, setActiveTab] = React.useState<Category>(Category.Headphone)
-    const [products, setProducts] = React.useState(filterProducts(data!, activeTab))
+    const [activeCategory, setActiveCategory] = React.useState<Category>(Category.Headphone)
+    const [products, setProducts] = React.useState(filterProducts(data!, activeCategory))
 
     function handleCategoryChange(category: Category) {
-        setActiveTab(category)
+        setActiveCategory(category)
         setProducts(filterProducts(data, category))
     }
 
@@ -67,12 +70,12 @@ export default function Home() {
             </Link>
 
             <div className="rounded-t-2xl bg-gray-100 p-4 pt-8">
-                {/* Filter Chips */}
+                {/* Filter Badges */}
                 <div className="mb-6 flex gap-3">
                     <Badge
                         variant="outline"
                         className={`hover:bg-primary/90 text-md cursor-pointer rounded-full px-4 font-normal ${
-                            activeTab === "Headphone"
+                            activeCategory === Category.Headphone
                                 ? "bg-primary text-primary-foreground"
                                 : "bg-gray-100 text-gray-600"
                         }`}
@@ -83,7 +86,7 @@ export default function Home() {
                     <Badge
                         variant="outline"
                         className={`hover:bg-primary/90 text-md cursor-pointer rounded-full px-4 font-normal ${
-                            activeTab === "Headset"
+                            activeCategory === Category.Headset
                                 ? "bg-primary text-primary-foreground"
                                 : "bg-gray-100 text-gray-600"
                         }`}
@@ -140,8 +143,8 @@ export default function Home() {
                 <div>
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="font-bold">Featured Products</h2>
-                        <Button variant="link" className="text-gray-500">
-                            See All
+                        <Button asChild variant="link" className="text-gray-500">
+                            <Link to="products">See All</Link>
                         </Button>
                     </div>
                     <Carousel

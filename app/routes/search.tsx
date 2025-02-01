@@ -28,17 +28,19 @@ export default function SearchPage() {
 
     return (
         <div className="min-h-screen bg-white">
+            {/* Header */}
             <header className="flex items-center justify-between border-b p-4">
-                <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-                    <ArrowLeft className="h-6 w-6" />
-                </Button>
+                <button onClick={() => navigate(-1)}>
+                    <ArrowLeft size={20} />
+                </button>
                 <h1 className="text-lg font-semibold">Search</h1>
-                <Button variant="ghost" size="icon">
-                    <ShoppingCart className="h-6 w-6" />
-                </Button>
+                <button>
+                    <ShoppingCart size={20} />
+                </button>
             </header>
 
             <div className="p-4">
+                {/* Search Bar */}
                 <div className="relative mb-6">
                     <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
                     <Input
@@ -50,6 +52,7 @@ export default function SearchPage() {
                     />
                 </div>
 
+                {/* Search Results */}
                 <div className="flex min-h-80 flex-col gap-4">
                     {searchResults === null ? (
                         <span className="w-full text-center text-sm">Start typing to search</span>
@@ -86,6 +89,7 @@ export default function SearchPage() {
                 </div>
 
                 <div className="mt-8">
+                    {/* Popular Products */}
                     <h2 className="mb-4 text-lg font-semibold">Popular Products</h2>
                     <div className="space-y-4">
                         {getMostPopularProducts(products, 3).map((product) => (
