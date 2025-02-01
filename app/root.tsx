@@ -30,7 +30,7 @@ export const links: Route.LinksFunction = () => [
     },
 ]
 
-export function meta(args: Route.MetaArgs) {
+export function meta(_: Route.MetaArgs) {
     return [
         { title: "Audio" },
         { name: "description", content: "It's modular and designed to last" },

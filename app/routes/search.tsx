@@ -6,7 +6,7 @@ import { Input } from "~/components/ui/input"
 import { useProducts } from "~/hooks/get-products"
 import Star from "~/icons/star.svg"
 import type { Product } from "~/lib/types"
-import { averageProductRating } from "~/lib/utils"
+import { averageProductRating, getMostPopularProducts } from "~/lib/utils"
 
 export default function SearchPage() {
     const navigate = useNavigate()
@@ -88,7 +88,7 @@ export default function SearchPage() {
                 <div className="mt-8">
                     <h2 className="mb-4 text-lg font-semibold">Popular Products</h2>
                     <div className="space-y-4">
-                        {products.slice(0, 3).map((product) => (
+                        {getMostPopularProducts(products, 3).map((product) => (
                             <div
                                 key={product.id}
                                 className="flex items-center gap-4 rounded-xl p-4"

@@ -10,28 +10,13 @@ import type { Product } from "~/lib/types"
 import { Carousel, CarouselContent, CarouselItem } from "~/components/ui/carousel"
 import { AuthContext } from "~/auth/auth-context"
 import { useProducts } from "~/hooks/get-products"
+import { getNameInitials, getMostPopularProducts } from "~/lib/utils"
 
 const Category = { Headphone: "Headphone", Headset: "Headset" } as const
 type Category = (typeof Category)[keyof typeof Category]
 
 function filterProducts(products: Product[], category: Category) {
     return products.filter((product) => product.category === category)
-}
-
-function getInitials(displayName: string | undefined | null): string {
-    if (!displayName) return ""
-
-    const nameParts = displayName.trim().split(" ")
-
-    if (nameParts.length > 1) {
-        return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`.toUpperCase()
-    }
-
-    return displayName.slice(0, 2).toUpperCase()
-}
-
-function getTopPopularProducts(products: Product[], limit: number = 5) {
-    return [...products].sort((a, b) => b.popularity - a.popularity).slice(0, limit)
 }
 
 export default function Home() {
@@ -58,7 +43,7 @@ export default function Home() {
                 </div>
                 <Avatar>
                     <AvatarImage src={user!.photoURL ?? undefined} />
-                    <AvatarFallback>{getInitials(user!.displayName)}</AvatarFallback>
+                    <AvatarFallback>{getNameInitials(user!.displayName)}</AvatarFallback>
                 </Avatar>
             </header>
 
@@ -117,7 +102,7 @@ export default function Home() {
                         className="w-full"
                     >
                         <CarouselContent>
-                            {getTopPopularProducts(products).map((product) => (
+                            {getMostPopularProducts(products).map((product) => (
                                 <CarouselItem
                                     key={product.id}
                                     className="md:basis-1/2 lg:basis-1/5"
