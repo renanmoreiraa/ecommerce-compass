@@ -1,19 +1,18 @@
-import Star from "~/icons/star.svg"
-import { ArrowLeft, EllipsisVertical, ShoppingCart, SlidersVertical } from "lucide-react"
+import { EllipsisVertical, SlidersVertical } from "lucide-react"
+import React from "react"
 import { useNavigate } from "react-router"
 import { Button } from "~/components/ui/button"
-import { useProducts } from "~/hooks/get-products"
-import { averageProductRating } from "~/lib/utils"
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
     DrawerHeader,
     DrawerTitle,
-    DrawerTrigger,
+    DrawerTrigger
 } from "~/components/ui/drawer"
-import React from "react"
+import { useProducts } from "~/hooks/get-products"
+import Star from "~/icons/star.svg"
 import type { Product } from "~/lib/types"
+import { averageProductRating } from "~/lib/utils"
 
 const Category = {
     Headphone: "headphones",
@@ -91,18 +90,9 @@ export default function ProductsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-white">
-            {/* Header */}
-            <header className="flex items-center justify-between border-b p-4">
-                <button onClick={() => navigate(-1)}>
-                    <ArrowLeft size={16} />
-                </button>
-                <button>
-                    <ShoppingCart size={16} />
-                </button>
-            </header>
+        <>
             {/* Heading */}
-            <div className="flex flex-col gap-4 p-4">
+            <div className="flex flex-col gap-4 px-4 pb-4">
                 <h1 className="text-2xl font-bold">All Products</h1>
                 <Drawer open={drawerOpen} onOpenChange={onDrawerOpenChange}>
                     <DrawerTrigger asChild>
@@ -203,6 +193,6 @@ export default function ProductsPage() {
                     ))}
                 </div>
             </div>
-        </div>
+        </>
     )
 }

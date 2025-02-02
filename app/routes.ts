@@ -6,7 +6,7 @@ const routes: RouteConfig = [
         index("routes/home.tsx"),
         route("/search", "routes/search.tsx"),
         route("/products", "routes/products.tsx"),
-        route("/product/:id", "routes/product.tsx"),
+        route("/products/:id", "routes/product.tsx"),
     ]),
     route("/signin", "routes/signin.tsx"),
     route("/signup", "routes/signup.tsx"),

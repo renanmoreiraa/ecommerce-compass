@@ -1,6 +1,6 @@
 import { ArrowLeft, EllipsisVertical, Search, ShoppingCart } from "lucide-react"
 import React from "react"
-import { useNavigate } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { useProducts } from "~/hooks/get-products"
@@ -27,59 +27,56 @@ export default function SearchPage() {
     }
 
     return (
-        <div className="min-h-screen bg-white">
-            {/* Header */}
-            <header className="flex items-center justify-between border-b p-4">
-                <button onClick={() => navigate(-1)}>
-                    <ArrowLeft size={20} />
-                </button>
-                <h1 className="text-lg font-semibold">Search</h1>
-                <button>
-                    <ShoppingCart size={20} />
-                </button>
-            </header>
-
-            <div className="p-4">
+        <>
+            <div className="px-4">
                 {/* Search Bar */}
                 <div className="relative mb-6">
-                    <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
+                    <Search
+                        className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2 transform"
+                        size={16}
+                    />
                     <Input
                         type="text"
                         placeholder="Search headphone"
                         value={searchQuery}
                         onChange={(e) => handleSearch(e.target.value)}
-                        className="bg-transparent p-6 pl-10"
+                        className="pl-10 text-sm"
                     />
                 </div>
 
                 {/* Search Results */}
                 <div className="flex min-h-80 flex-col gap-4">
                     {searchResults === null ? (
-                        <span className="w-full text-center text-sm">Start typing to search</span>
+                        <span className="w-full text-center text-xs">Start typing to search</span>
                     ) : searchResults.length === 0 ? (
-                        <span className="w-full text-center text-sm">No results found</span>
+                        <span className="w-full text-center text-xs">No results found</span>
                     ) : (
                         searchResults.map((product) => (
                             <div
                                 key={product.id}
                                 className="flex items-center gap-4 rounded-xl bg-gray-50 p-3"
                             >
-                                <img
-                                    src={product.img || "/placeholder.svg"}
-                                    alt={product.name}
-                                    width={80}
-                                    height={80}
-                                    className="rounded-lg"
-                                />
+                                <Link to={`/products/${product.id}`}>
+                                    <img
+                                        src={product.img || "/placeholder.svg"}
+                                        alt={product.name}
+                                        width={80}
+                                        height={80}
+                                        className="rounded-lg"
+                                    />
+                                </Link>
                                 <div className="flex-1">
-                                    <h3 className="font-medium">{product.name}</h3>
+                                    <Link to={`/products/${product.id}`}>
+                                        <h3 className="font-medium">{product.name}</h3>
+                                    </Link>
                                     <p className="text-sm">USD {product.price}</p>
-                                    <div className="mt-1 flex items-center gap-1">
-                                        <span className="text-sm">
-                                            ★ TODO: Função para pegar rating do produto
+                                    <div className="mt-1 flex items-center gap-3 text-sm">
+                                        <span className="flex items-center gap-1">
+                                            <Star />
+                                            {averageProductRating(product.reviews).toFixed(1)}
                                         </span>
                                         <span className="text-sm text-gray-500">
-                                            ({product.reviews.length} Reviews)
+                                            {product.reviews.length} Reviews
                                         </span>
                                     </div>
                                 </div>
@@ -97,21 +94,25 @@ export default function SearchPage() {
                                 key={product.id}
                                 className="flex items-center gap-4 rounded-xl p-4"
                             >
-                                <img
-                                    src={product.img || "/placeholder.svg"}
-                                    alt={product.name}
-                                    width={64}
-                                    height={64}
-                                    className="rounded-lg"
-                                />
+                                <Link to={`/products/${product.id}`}>
+                                    <img
+                                        src={product.img || "/placeholder.svg"}
+                                        alt={product.name}
+                                        width={64}
+                                        height={64}
+                                        className="rounded-lg"
+                                    />
+                                </Link>
                                 <div className="flex-1 space-y-1">
-                                    <h3>{product.name}</h3>
+                                    <Link to={`/products/${product.id}`}>
+                                        <h3>{product.name}</h3>
+                                    </Link>
                                     <p className="text-sm font-bold">USD {product.price}</p>
                                     <div className="flex items-center gap-3 text-sm">
-                                        <div className="flex items-center gap-1">
+                                        <span className="flex items-center gap-1">
                                             <Star />
                                             {averageProductRating(product.reviews).toFixed(1)}
-                                        </div>
+                                        </span>
                                         <span className="text-gray-500">
                                             {product.reviews.length}{" "}
                                             {product.reviews.length > 1 ? "Reviews" : "Review"}
@@ -126,6 +127,6 @@ export default function SearchPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

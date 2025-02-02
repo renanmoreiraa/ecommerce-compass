@@ -1,22 +1,20 @@
-import { Link } from "react-router"
-import { ArrowRight, Headset, Menu, Search } from "lucide-react"
-import { Input } from "~/components/ui/input"
-import { Button } from "~/components/ui/button"
-import Logo from "~/icons/logo.svg"
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
-import { Badge } from "~/components/ui/badge"
+import { ArrowRight, Search } from "lucide-react"
 import React from "react"
-import type { Product } from "~/lib/types"
-import { Carousel, CarouselContent, CarouselItem } from "~/components/ui/carousel"
+import { Link } from "react-router"
 import { AuthContext } from "~/auth/auth-context"
+import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
+import { Carousel, CarouselContent, CarouselItem } from "~/components/ui/carousel"
+import { Input } from "~/components/ui/input"
 import { useProducts } from "~/hooks/get-products"
-import { getNameInitials, getMostPopularProducts } from "~/lib/utils"
+import type { Product } from "~/lib/types"
+import { getMostPopularProducts } from "~/lib/utils"
 
 const Category = {
-    Headphone:"Headphone",
-    Headset: "Headset",
+    Headphone: "headphones",
+    Headset: "headsets",
 } as const
-type Category = typeof Category[keyof typeof Category]
+type Category = (typeof Category)[keyof typeof Category]
 
 function filterProducts(products: Product[], category: Category) {
     return products.filter((product) => product.category === category)
@@ -34,47 +32,32 @@ export default function Home() {
     }
 
     return (
-        <div className="min-h-screen w-full bg-white">
-            {/* Header */}
-            <header className="mb-6 flex items-center justify-between p-4">
-                <button className="cursor-pointer">
-                    <Menu size={24} />
-                </button>
-                <div className="flex items-center gap-2">
-                    <Logo />
-                    <h1 className="text-lg font-bold">Audio</h1>
-                </div>
-                <Avatar>
-                    <AvatarImage src={user!.photoURL ?? undefined} />
-                    <AvatarFallback>{getNameInitials(user!.displayName)}</AvatarFallback>
-                </Avatar>
-            </header>
-
+        <>
             {/* Welcome Section */}
-            <div className="mb-6 p-4">
-                <p className="mb-1 font-medium text-gray-600">
+            <div className="px-4 pb-4">
+                <p className="mb-1 text-sm font-medium text-gray-600">
                     Hi, {user!.displayName ?? "Unknown"}
                 </p>
-                <h1 className="text-3xl font-bold">What are you looking for today?</h1>
+                <h1 className="text-2xl font-bold">What are you looking for today?</h1>
             </div>
 
             {/* Search Bar */}
             <Link to="/search" className="relative mx-4 mb-6 block">
-                <Search className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 transform text-zinc-400" />
+                <Search size={16} className="absolute top-1/2 left-3 z-10 -translate-y-1/2 transform text-zinc-400" />
                 <Input
                     type="text"
                     placeholder="Search headphone"
-                    className="w-full border-gray-300 bg-transparent p-6 pl-10 shadow-none"
+                    className="w-full pl-10 text-sm"
                     readOnly
                 />
             </Link>
 
-            <div className="rounded-t-2xl bg-gray-100 p-4 pt-8">
+            <div className="rounded-t-2xl bg-gray-100 p-4">
                 {/* Filter Badges */}
-                <div className="mb-6 flex gap-3">
+                <div className="mb-4 flex gap-3">
                     <Badge
                         variant="outline"
-                        className={`hover:bg-primary/90 text-md cursor-pointer rounded-full px-4 font-normal ${
+                        className={`hover:bg-primary/90 cursor-pointer rounded-full px-4 text-sm font-normal ${
                             activeCategory === Category.Headphone
                                 ? "bg-primary text-primary-foreground"
                                 : "bg-gray-100 text-gray-600"
@@ -85,7 +68,7 @@ export default function Home() {
                     </Badge>
                     <Badge
                         variant="outline"
-                        className={`hover:bg-primary/90 text-md cursor-pointer rounded-full px-4 font-normal ${
+                        className={`hover:bg-primary/90 cursor-pointer rounded-full px-4 text-sm font-normal ${
                             activeCategory === Category.Headset
                                 ? "bg-primary text-primary-foreground"
                                 : "bg-gray-100 text-gray-600"
@@ -96,7 +79,7 @@ export default function Home() {
                     </Badge>
                 </div>
                 {/* Top Products Carousel */}
-                <div className="mb-6">
+                <div className="mb-4">
                     <Carousel
                         opts={{
                             align: "start",
@@ -110,29 +93,38 @@ export default function Home() {
                                     key={product.id}
                                     className="md:basis-1/2 lg:basis-1/5"
                                 >
-                                    <div className="flex items-center rounded-2xl bg-white p-4">
+                                    <div className="flex items-center rounded-2xl bg-white p-4 px-8">
                                         <div className="flex w-full max-w-48 flex-col items-start gap-4">
-                                            <h3 className="text-2xl font-bold">{product.name}</h3>
+                                            <Link
+                                                to={`/products/${product.id}`}
+                                                className="max-w-42"
+                                            >
+                                                <h3 className="text-2xl font-bold">
+                                                    {product.name}
+                                                </h3>
+                                            </Link>
                                             <Button
                                                 variant="link"
                                                 className="p-0 font-bold"
                                                 asChild
                                             >
-                                                <Link to={`/product/${product.id}`}>
+                                                <Link to={`/products/${product.id}`}>
                                                     Shop now <ArrowRight size={16} />
                                                 </Link>
                                             </Button>
                                         </div>
-                                        <img
-                                            src={
-                                                product.img ||
-                                                "/placeholder.svg?height=120&width=120"
-                                            }
-                                            alt={product.name}
-                                            width={120}
-                                            height={120}
-                                            className="mx-auto mb-4 object-contain"
-                                        />
+                                        <Link className="mx-auto mb-4" to={`/product/${product.id}`}>
+                                            <img
+                                                src={
+                                                    product.img ||
+                                                    "/placeholder.svg?height=120&width=120"
+                                                }
+                                                alt={product.name}
+                                                width={120}
+                                                height={120}
+                                                className="object-contain"
+                                            />
+                                        </Link>
                                     </div>
                                 </CarouselItem>
                             ))}
@@ -161,18 +153,22 @@ export default function Home() {
                                     className="max-w-[220px] md:basis-1/2 lg:basis-1/5"
                                 >
                                     <div className="rounded-md bg-white p-4">
-                                        <img
-                                            src={
-                                                product.img ||
-                                                "/placeholder.svg?height=120&width=120"
-                                            }
-                                            alt={product.name}
-                                            width={120}
-                                            height={120}
-                                            className="mx-auto mb-4"
-                                        />
-                                        <h3 className="text-sm">{product.name}</h3>
-                                        <p className="text-sm font-semibold text-black">
+                                        <Link to={`/products/${product.id}`}>
+                                            <img
+                                                src={
+                                                    product.img ||
+                                                    "/placeholder.svg?height=120&width=120"
+                                                }
+                                                alt={product.name}
+                                                width={120}
+                                                height={120}
+                                                className="mx-auto mb-4"
+                                            />
+                                        </Link>
+                                        <Link to={`/products/${product.id}`}>
+                                            <h3 className="font-medium text-sm">{product.name}</h3>
+                                        </Link>
+                                        <p className="text-sm font-semibold text-primary">
                                             USD {product.price.toFixed(0)}
                                         </p>
                                     </div>
@@ -182,6 +178,6 @@ export default function Home() {
                     </Carousel>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
