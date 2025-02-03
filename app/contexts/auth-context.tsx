@@ -42,24 +42,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, [])
 
     const signIn = async (email: string, password: string) => {
-        setLoading(true)
-        await signInWithEmailAndPassword(auth, email, password)
-        navigate("/")
-        setLoading(false)
+        try {
+            setLoading(true)
+            await signInWithEmailAndPassword(auth, email, password)
+            navigate("/")
+        } catch (error) {
+            throw error
+        } finally {
+            setLoading(false)
+        }
     }
 
     const signInWithGoogle = async () => {
-        setLoading(true)
-        await signInWithPopup(auth, new GoogleAuthProvider())
-        navigate("/")
-        setLoading(false)
+        try {
+            setLoading(true)
+            await signInWithPopup(auth, new GoogleAuthProvider())
+            navigate("/")
+        } catch (error) {
+            throw error
+        } finally {
+            setLoading(false)
+        }
+
     }
 
     const signUp = async (email: string, password: string) => {
-        setLoading(true)
-        await createUserWithEmailAndPassword(auth, email, password)
-        await signIn(email, password)
-        setLoading(false)
+        try {
+            setLoading(true)
+            await createUserWithEmailAndPassword(auth, email, password)
+            await signIn(email, password)
+        } catch (error) {
+            throw error
+        } finally {
+            setLoading(false)
+        }
     }
 
     const logout = async () => {
