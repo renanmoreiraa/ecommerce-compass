@@ -1,6 +1,6 @@
 import { EllipsisVertical, SlidersVertical } from "lucide-react"
 import React from "react"
-import { useNavigate } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { Button } from "~/components/ui/button"
 import {
     Drawer,
@@ -171,12 +171,14 @@ export default function ProductsPage() {
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                     {applyFilters(products, filters).map((product) => (
                         <div key={product.id} className="rounded-lg bg-white p-4">
-                            <img
-                                src={product.img}
-                                alt={product.name}
-                                className="mx-auto h-32 object-cover"
-                                loading="lazy"
-                            />
+                            <Link to={`/products/${product.id}`}>
+                                <img
+                                    src={product.img}
+                                    alt={product.name}
+                                    className="mx-auto h-32 object-cover"
+                                    loading="lazy"
+                                />
+                            </Link>
                             <h2 className="mt-4 text-sm">{product.name}</h2>
                             <div className="flex flex-col">
                                 <span className="mt-1 text-sm font-bold">USD {product.price}</span>
