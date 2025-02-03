@@ -36,14 +36,17 @@ export default function Home() {
             {/* Welcome Section */}
             <div className="px-4 pb-4">
                 <p className="mb-1 text-sm font-medium text-gray-600">
-                    Hi, {user!.displayName ?? "Unknown"}
+                    Hi {user && user.displayName !== null ? ", " + user.displayName : ""}
                 </p>
                 <h1 className="text-2xl font-bold">What are you looking for today?</h1>
             </div>
 
             {/* Search Bar */}
             <Link to="/search" className="relative mx-4 mb-6 block">
-                <Search size={16} className="absolute top-1/2 left-3 z-10 -translate-y-1/2 transform text-zinc-400" />
+                <Search
+                    size={16}
+                    className="absolute top-1/2 left-3 z-10 -translate-y-1/2 transform text-zinc-400"
+                />
                 <Input
                     type="text"
                     placeholder="Search headphone"
@@ -113,7 +116,10 @@ export default function Home() {
                                                 </Link>
                                             </Button>
                                         </div>
-                                        <Link className="mx-auto mb-4" to={`/product/${product.id}`}>
+                                        <Link
+                                            className="mx-auto mb-4"
+                                            to={`/product/${product.id}`}
+                                        >
                                             <img
                                                 src={
                                                     product.img ||
@@ -166,9 +172,9 @@ export default function Home() {
                                             />
                                         </Link>
                                         <Link to={`/products/${product.id}`}>
-                                            <h3 className="font-medium text-sm">{product.name}</h3>
+                                            <h3 className="text-sm font-medium">{product.name}</h3>
                                         </Link>
-                                        <p className="text-sm font-semibold text-primary">
+                                        <p className="text-primary text-sm font-semibold">
                                             USD {product.price.toFixed(0)}
                                         </p>
                                     </div>

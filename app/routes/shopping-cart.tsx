@@ -16,7 +16,7 @@ export default function ShoppingCartPage() {
             {cart.items.length > 0 ? (
                 cart.items.map((item) => <CartItemView key={item.productId} item={item} />)
             ) : (
-                <p>Your cart is empty</p>
+                <p className="text-center text-muted-foreground text-sm">Your cart is empty</p>
             )}
             <div className="flex items-center justify-between mt-auto">
                 <span className="text-muted-foreground text-xs font-medium">

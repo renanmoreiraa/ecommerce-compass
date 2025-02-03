@@ -69,7 +69,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                         {children}
                         <ScrollRestoration />
                         <Scripts />
-                        {import.meta.env.DEV ? <ReactQueryDevtools initialIsOpen={false} /> : null}
                     </QueryClientProvider>
                 </AuthProvider>
             </body>
