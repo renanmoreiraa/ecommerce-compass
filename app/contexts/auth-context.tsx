@@ -5,6 +5,7 @@ import {
     GoogleAuthProvider,
     onAuthStateChanged,
     signOut,
+    createUserWithEmailAndPassword,
 } from "firebase/auth"
 import type { User } from "firebase/auth"
 import { auth } from "~/lib/firebase"
@@ -13,7 +14,9 @@ import { useNavigate } from "react-router"
 
 export interface AuthContext {
     user: User | null
+    loading: boolean
     signIn: (email: string, password: string) => Promise<void>
+    signUp: (email: string, password: string) => Promise<void>
     signInWithGoogle: () => Promise<void>
     logout: () => Promise<void>
 }
@@ -23,6 +26,7 @@ export const AuthContext = React.createContext<AuthContext>({} as AuthContext)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const navigate = useNavigate()
     const [user, setUser] = React.useState<User | null>(null)
+    const [loading, setLoading] = React.useState(false)
 
     React.useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -38,40 +42,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, [])
 
     const signIn = async (email: string, password: string) => {
-        try {
-            await signInWithEmailAndPassword(
-                auth,
-                email,
-                password,
-            )
-            navigate("/")
-        } catch (error) { 
-            //TODO: handle error
-        }
+        setLoading(true)
+        await signInWithEmailAndPassword(auth, email, password)
+        navigate("/")
+        setLoading(false)
     }
 
     const signInWithGoogle = async () => {
-        try {
-            await signInWithPopup(auth, new GoogleAuthProvider())
-            navigate("/")
-        } catch (error) {
-            //TODO: handle error
-        }
+        setLoading(true)
+        await signInWithPopup(auth, new GoogleAuthProvider())
+        navigate("/")
+        setLoading(false)
+    }
+
+    const signUp = async (email: string, password: string) => {
+        setLoading(true)
+        await createUserWithEmailAndPassword(auth, email, password)
+        await signIn(email, password)
+        setLoading(false)
     }
 
     const logout = async () => {
-        try {
-            await signOut(auth)
-            navigate("/login")
-        } catch (error) {
-            // TODO: handle error
-        }
+        await signOut(auth)
+        navigate("/signin")
     }
 
     return (
-        <AuthContext.Provider
-            value={{ user, signIn, signInWithGoogle, logout }}
-        >
+        <AuthContext.Provider value={{ user, loading, signIn, signUp, signInWithGoogle, logout }}>
             {children}
         </AuthContext.Provider>
     )

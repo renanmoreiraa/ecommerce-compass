@@ -1,5 +1,5 @@
 import Logo from "~/icons/logo.svg"
-import { ArrowLeft, Menu, ShoppingCart, Trash } from "lucide-react"
+import { ArrowLeft, User, LogOut, Menu, ShoppingCart, Trash } from "lucide-react"
 import React from "react"
 import { Link, Outlet, useLocation, useNavigate } from "react-router"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
@@ -9,6 +9,12 @@ import { ShoppingCartContext, ShoppingCartProvider } from "~/contexts/shopping-c
 import { usePrefetchQuery } from "@tanstack/react-query"
 import { Api } from "~/lib/api"
 import { LoadingSpinner } from "~/components/loading-spinner"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
 
 interface HeaderProps {
     left: React.ReactNode | null
@@ -18,7 +24,7 @@ interface HeaderProps {
 
 const useHeaderConfig = (pathname: string): HeaderProps => {
     const navigate = useNavigate()
-    const { user } = React.use(AuthContext)!
+    const { user, logout } = React.use(AuthContext)!
     const { clearCart, items } = React.use(ShoppingCartContext)!
 
     const ShoppingCartIcon = () => {
@@ -43,6 +49,31 @@ const useHeaderConfig = (pathname: string): HeaderProps => {
         )
     }
 
+    const UserIcon = () => {
+        return (
+            <DropdownMenu>
+                <DropdownMenuTrigger className="focus:outline-none">
+                    <Avatar>
+                        <AvatarImage src={user!.photoURL ?? undefined} />
+                        <AvatarFallback>{getNameInitials(user!.displayName)}</AvatarFallback>
+                    </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                        <Link to="/profile">
+                            <User size={16} />
+                            Profile
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={logout}>
+                        <LogOut size={16} />
+                        Logout
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        )
+    }
+
     switch (pathname) {
         case "/":
             return {
@@ -57,12 +88,7 @@ const useHeaderConfig = (pathname: string): HeaderProps => {
                         <h1 className="text-lg font-bold">Audio</h1>
                     </div>
                 ),
-                right: (
-                    <Avatar>
-                        <AvatarImage src={user!.photoURL ?? undefined} />
-                        <AvatarFallback>{getNameInitials(user!.displayName)}</AvatarFallback>
-                    </Avatar>
-                ),
+                right: <UserIcon />,
             }
         case "/search":
             return {

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "~/components/ui/form"
-import { Lock, Mail } from "lucide-react"
+import { Loader, Lock, Mail } from "lucide-react"
 import { Input } from "~/components/ui/input"
 import { Button } from "~/components/ui/button"
 import { Link } from "react-router"
@@ -25,14 +25,21 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
     })
 
     const [error, setError] = React.useState("")
-    const { signIn, signInWithGoogle } = React.use(AuthContext)!
+    const { signIn, signUp, loading, signInWithGoogle } = React.use(AuthContext)!
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setError("")
-        await signIn(values.email, values.password).catch((error) => {
-            console.error("Login error:", error)
-            setError("Invalid email or password")
-        })
+        if (mode === "signup") {
+            await signUp(values.email, values.password).catch((error) => {
+                console.error("SignUp error:", error)
+                setError("Failed to sign up")
+            })
+        } else {
+            await signIn(values.email, values.password).catch((error) => {
+                console.error("SignIn error:", error)
+                setError("Invalid email or password")
+            })
+        }
     }
 
     const handleGoogleSignIn = async () => {
@@ -49,16 +56,11 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
         <div className="relative z-10 flex h-[80dvh] w-full flex-col justify-center gap-8 p-8 text-center">
             <div className="mb-auto w-full space-y-2">
                 <h1 className="text-4xl font-bold text-white">Audio</h1>
-                <p className="text-gray-300">
-                    It's modular and designed to last
-                </p>
+                <p className="text-gray-300">It's modular and designed to last</p>
             </div>
-
+            {error && <p className="text-sm font-bold text-red-500">{error}</p>}
             <Form {...form}>
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-4"
-                >
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FormField
                         control={form.control}
                         name="email"
@@ -70,7 +72,7 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
                                         <Input
                                             type="email"
                                             placeholder="Email"
-                                            className="border-transparent bg-white p-6 pl-10 text-white placeholder:text-gray-400"
+                                            className="bg-white pl-10"
                                             {...field}
                                         />
                                     </div>
@@ -79,7 +81,6 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
                             </FormItem>
                         )}
                     />
-
                     <FormField
                         control={form.control}
                         name="password"
@@ -91,7 +92,7 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
                                         <Input
                                             type="password"
                                             placeholder="Password"
-                                            className="border-transparent bg-white p-6 pl-10 text-white placeholder:text-gray-400"
+                                            className="bg-white pl-10"
                                             {...field}
                                         />
                                     </div>
@@ -100,49 +101,36 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
                             </FormItem>
                         )}
                     />
-
-                    {error && <p className="text-sm text-red-500">{error}</p>}
-
                     {mode === "signin" ? (
                         <div className="-mt-2">
-                            <Button
-                                asChild
-                                variant={"link"}
-                                className="text-sm text-white"
-                            >
-                                <Link to="/forgot-password">
-                                    Forgot Password
-                                </Link>
+                            <Button asChild variant={"link"} className="text-sm text-white">
+                                <Link to="/forgot-password">Forgot Password</Link>
                             </Button>
                         </div>
                     ) : null}
-
                     <Button
                         type="submit"
-                        className="bg-primary hover:bg-primary/90 w-full p-6 font-semibold text-white"
+                        disabled={loading}
+                        className="bg-primary w-full text-white"
                     >
+                        {loading ? <Loader className="animate-spin" /> : null}
                         {mode === "signin" ? "Sign In" : "Sign Up"}
                     </Button>
-
                     <Button
                         type="button"
                         onClick={handleGoogleSignIn}
                         variant="link"
                         className="p-6 text-white"
+                        disabled={loading}
                     >
                         <Google />
-                        {mode === "signin"
-                            ? "Sign in with Google"
-                            : "Sign up with Google"}
+                        {mode === "signin" ? "Sign in with Google" : "Sign up with Google"}
                     </Button>
                 </form>
             </Form>
-
             <div className="mt-auto">
                 <p className="text-sm text-gray-300">
-                    {mode === "signin"
-                        ? "Didn't have any account?"
-                        : "If you have an account?"}{" "}
+                    {mode === "signin" ? "Didn't have any account?" : "If you have an account?"}{" "}
                     <Link
                         to={mode === "signin" ? "/signup" : "/signin"}
                         className="text-[#00FF90] hover:underline"

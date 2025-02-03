@@ -39,13 +39,17 @@ export function meta(_: Route.MetaArgs) {
 
 export async function clientLoader(args: Route.ClientLoaderArgs) {
     const url = new URL(args.request.url)
-    const authed = await isAuthed()
 
+    if (url.pathname === "/signin" || url.pathname === "/signup") {
+        return null
+    }
+
+    const authed = await isAuthed()
     if (!authed) {
         return redirect("/signin")
-    } else if (url.pathname === "/signin" || url.pathname === "/signup") {
-        return redirect("/")
     }
+
+    return null
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
