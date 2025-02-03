@@ -9,7 +9,6 @@ import {
 } from "firebase/auth"
 import type { User } from "firebase/auth"
 import { auth } from "~/lib/firebase"
-import Cookies from "js-cookie"
 import { useNavigate } from "react-router"
 
 export interface AuthContext {
@@ -29,14 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = React.useState(false)
 
     React.useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user)
-            if (user) {
-                Cookies.set("auth", "true", { expires: 7 })
-            } else {
-                Cookies.remove("auth")
-            }
-        })
+        const unsubscribe = onAuthStateChanged(auth, (user) => setUser(user))
 
         return () => unsubscribe()
     }, [])
