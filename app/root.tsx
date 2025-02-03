@@ -10,14 +10,14 @@ import {
     Scripts,
     ScrollRestoration,
 } from "react-router"
-import { AuthProvider } from "~/auth/auth-context"
-import { isAuthed } from "~/auth/auth-utils"
+import { AuthProvider } from "~/contexts/auth-context"
+import { isAuthed } from "~/lib/utils"
 import { LoadingSpinner } from "~/components/loading-spinner"
 import type { Route } from "./+types/root"
 import "./root.css"
 
 export const links: Route.LinksFunction = () => [
-    {rel: "icon", type: "image/svg+xml", href: "/favicon.svg"},
+    { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
     {
         rel: "preconnect",

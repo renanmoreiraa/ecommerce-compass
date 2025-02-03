@@ -8,7 +8,7 @@ import { Input } from "~/components/ui/input"
 import { Button } from "~/components/ui/button"
 import { Link } from "react-router"
 import Google from "~/icons/google.svg"
-import { AuthContext } from "~/auth/auth-context"
+import { AuthContext } from "~/contexts/auth-context"
 
 const formSchema = z.object({
     email: z.string().email("Invalid email address"),

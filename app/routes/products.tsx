@@ -7,9 +7,9 @@ import {
     DrawerContent,
     DrawerHeader,
     DrawerTitle,
-    DrawerTrigger
+    DrawerTrigger,
 } from "~/components/ui/drawer"
-import { useProducts } from "~/hooks/get-products"
+import { useProducts } from "~/hooks/use-products"
 import Star from "~/icons/star.svg"
 import type { Product } from "~/lib/types"
 import { averageProductRating } from "~/lib/utils"
@@ -146,7 +146,10 @@ export default function ProductsPage() {
                                                     }
                                                     className="text-xs"
                                                     onClick={() =>
-                                                        setTempFilters((prev) => ({ ...prev, sorting }))
+                                                        setTempFilters((prev) => ({
+                                                            ...prev,
+                                                            sorting,
+                                                        }))
                                                     }
                                                 >
                                                     {sorting}
@@ -154,7 +157,9 @@ export default function ProductsPage() {
                                             ))}
                                         </div>
                                     </div>
-                                    <Button className="text-xs w-full" onClick={handleApplyFilters}>Apply Filters</Button>
+                                    <Button className="w-full text-xs" onClick={handleApplyFilters}>
+                                        Apply Filters
+                                    </Button>
                                 </div>
                             </div>
                         </div>

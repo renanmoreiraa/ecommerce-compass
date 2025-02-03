@@ -2,6 +2,7 @@ import { clsx } from "clsx"
 import type { ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import type { Product, ProductReview } from "./types"
+import { auth } from "./firebase"
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -24,4 +25,13 @@ export function averageProductRating(reviews: ProductReview[]): number {
 
 export function getMostPopularProducts(products: Product[], limit: number = 5) {
     return [...products].sort((a, b) => b.popularity - a.popularity).slice(0, limit)
+}
+
+export async function isAuthed(): Promise<boolean> {
+    return new Promise((resolve) => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            unsubscribe()
+            resolve(Boolean(user))
+        })
+    })
 }

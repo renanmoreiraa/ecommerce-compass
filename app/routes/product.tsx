@@ -1,19 +1,23 @@
-import type { Route } from "../+types/root"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
-import { useProducts } from "~/hooks/get-products"
-import { Link, redirect } from "react-router"
+import React from "react"
+import { Link, redirect, useNavigate } from "react-router"
+import { Button } from "~/components/ui/button"
 import { Carousel, CarouselContent, CarouselItem } from "~/components/ui/carousel"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
+import { ShoppingCartContext } from "~/contexts/shopping-cart-context"
+import { useProducts } from "~/hooks/use-products"
 import Star from "~/icons/star.svg"
 import type { Product } from "~/lib/types"
-import { Button } from "~/components/ui/button"
+import type { Route } from "../+types/root"
 
 function randomProducts(products: Product[], amount = 5) {
-    const shuffled = [...products].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, Math.min(amount, products.length));
+    const shuffled = [...products].sort(() => Math.random() - 0.5)
+    return shuffled.slice(0, Math.min(amount, products.length))
 }
 
 export default function ProductPage({ params }: Route.ComponentProps) {
+    const navigate = useNavigate()
     const { data: products } = useProducts()
+    const cart = React.use(ShoppingCartContext)!
     const product = products.find((product) => product.id === params.id)
 
     if (!product) {
@@ -21,8 +25,9 @@ export default function ProductPage({ params }: Route.ComponentProps) {
         return null
     }
 
-    function handleAddToCart() {
-        // TODO: Implement add to cart functionality
+    const addToCart = () => {
+        cart.addItem(product)
+        navigate("/shopping-cart")
     }
 
     return (
@@ -52,15 +57,7 @@ export default function ProductPage({ params }: Route.ComponentProps) {
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent value="overview" className="p-4">
-                        <Carousel
-                            opts={
-                                {
-                                    // align: "start",
-                                    // loop: true,
-                                }
-                            }
-                            className="w-full"
-                        >
+                        <Carousel opts={{ align: "start", loop: true }} className="w-full">
                             <CarouselContent>
                                 <CarouselItem key={1} className="basis-1/2">
                                     <img className="rounded-md" src={product.img} />
@@ -179,7 +176,7 @@ export default function ProductPage({ params }: Route.ComponentProps) {
                 </Carousel>
             </div>
             <div className="p-8">
-                <Button onClick={handleAddToCart} className="w-full">
+                <Button onClick={addToCart} className="w-full">
                     Add to Cart
                 </Button>
             </div>

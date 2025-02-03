@@ -1,15 +1,13 @@
-import { ArrowLeft, EllipsisVertical, Search, ShoppingCart } from "lucide-react"
+import { EllipsisVertical, Search } from "lucide-react"
 import React from "react"
 import { Link, useNavigate } from "react-router"
-import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
-import { useProducts } from "~/hooks/get-products"
+import { useProducts } from "~/hooks/use-products"
 import Star from "~/icons/star.svg"
 import type { Product } from "~/lib/types"
 import { averageProductRating, getMostPopularProducts } from "~/lib/utils"
 
 export default function SearchPage() {
-    const navigate = useNavigate()
     const { data: products } = useProducts()
     const [searchQuery, setSearchQuery] = React.useState("")
     const [searchResults, setSearchResults] = React.useState<Product[] | null>(null)
